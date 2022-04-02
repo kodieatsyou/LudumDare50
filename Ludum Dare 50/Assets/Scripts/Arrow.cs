@@ -5,7 +5,7 @@ using UnityEngine;
 public class Arrow : MonoBehaviour
 {
 
-    public float dropSpeed = 0.01f;
+    public float dropSpeed = 0.1f;
     public Sprite left;
     public Sprite right;
     public Sprite up;
@@ -55,12 +55,14 @@ public class Arrow : MonoBehaviour
     public void StrumNote()
     {
         aPlayer.PlaySong();
+        GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().tickPerformanceUp();
         Destroy(this.gameObject);
     }
 
     public void MissNote()
     {
         aPlayer.StopSong();
+        GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().tickPerformanceDown();
         Destroy(this.gameObject);
     }
 }
