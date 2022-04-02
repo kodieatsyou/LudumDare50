@@ -13,6 +13,8 @@ public class Strummer : MonoBehaviour
 
     bool strumming = false;
 
+    bool colliding = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +30,10 @@ public class Strummer : MonoBehaviour
 
     public void Strum()
     {
+        if(!colliding)
+        {
+            //GameObject.FindGameObjectWithTag("AudioPlayer").GetComponent<AudioPlayer>().PlayMiss();
+        }
         StartCoroutine(ActivateStrummer());
     }
 
@@ -40,16 +46,23 @@ public class Strummer : MonoBehaviour
         strumming = false;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if(collision.gameObject.tag == "Note")
         {
-
-            Debug.Log("Note hit");
-            if(strumming)
+            colliding = true;
+            if (strumming)
             {
                 collision.gameObject.GetComponent<Arrow>().StrumNote();
             }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Note")
+        {
+            colliding = true;
         }
     }
 
@@ -57,7 +70,7 @@ public class Strummer : MonoBehaviour
     {
         if (collision.gameObject.tag == "Note")
         {
-            //collision.GetComponent<Arrow>().inTrigger = false;
+            colliding = false;
         }
     }
 }

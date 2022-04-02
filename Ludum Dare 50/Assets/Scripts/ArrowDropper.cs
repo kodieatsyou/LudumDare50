@@ -23,11 +23,14 @@ public class ArrowDropper : MonoBehaviour
     int bar = 0;
     public AudioClip[] barClips;
 
+    int startCounter = 1;
+
 
 // Start is called before the first frame update
 void Start()
     {
         bars = song.text.Split('.');
+        StartCoroutine(CountIn((60f / BPM) / 4f));
         StartCoroutine(Play((60f/BPM)/4f));
     }
 
@@ -37,9 +40,25 @@ void Start()
        
     }
 
+    IEnumerator CountIn(float seconds)
+    {
+        while (startCounter < 14)
+        {
+            if (startCounter % 4 == 0)
+            {
+                GameObject.FindGameObjectWithTag("AudioPlayer").GetComponent<AudioPlayer>().TapIn();
+            }
+            yield return new WaitForSecondsRealtime(seconds);
+            startCounter++;
+            Debug.Log(startCounter);
+        }
+    }
+
     IEnumerator Play(float seconds)
     {
-        for (int i = 0; i < bars.Length; i++) {
+        
+        for (int i = 0; i < bars.Length; i++)
+        {
             ReadBar(bars[i]);
             yield return new WaitForSecondsRealtime(seconds);
         }

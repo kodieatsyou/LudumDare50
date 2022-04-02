@@ -4,38 +4,23 @@ using UnityEngine;
 
 public class AudioPlayer : MonoBehaviour
 {
-    AudioClip[] barClips;
-    AudioSource source;
+    public AudioClip[] missSounds;
+    public AudioSource source;
+    public AudioSource missSource;
+
+    public AudioClip tapIn;
+
+    public AudioClip fullSong;
+
+    public float BPM;
 
     int curClip = 0;
+
+    float timeInSong = 0;
     // Start is called before the first frame update
     void Start()
     {
-        source = gameObject.GetComponent<AudioSource>();
-        barClips = new AudioClip[]{(AudioClip)Resources.Load("Songs/Test/1"),
-                                     (AudioClip)Resources.Load("Songs/Test/2"),
-                                     (AudioClip)Resources.Load("Songs/Test/3"),
-                                     (AudioClip)Resources.Load("Songs/Test/4"),
-                                     (AudioClip)Resources.Load("Songs/Test/5"),
-                                     (AudioClip)Resources.Load("Songs/Test/6"),
-                                     (AudioClip)Resources.Load("Songs/Test/7"),
-                                     (AudioClip)Resources.Load("Songs/Test/8"),
-                                     (AudioClip)Resources.Load("Songs/Test/9"),
-                                     (AudioClip)Resources.Load("Songs/Test/10"),
-                                     (AudioClip)Resources.Load("Songs/Test/11"),
-                                     (AudioClip)Resources.Load("Songs/Test/12"),
-                                     (AudioClip)Resources.Load("Songs/Test/13"),
-                                     (AudioClip)Resources.Load("Songs/Test/14"),
-                                     (AudioClip)Resources.Load("Songs/Test/15"),
-                                     (AudioClip)Resources.Load("Songs/Test/16"),
-                                     (AudioClip)Resources.Load("Songs/Test/17"),
-                                     (AudioClip)Resources.Load("Songs/Test/18"),
-                                     (AudioClip)Resources.Load("Songs/Test/19"),
-                                     (AudioClip)Resources.Load("Songs/Test/20"),
-                                     (AudioClip)Resources.Load("Songs/Test/21"),
-                                     (AudioClip)Resources.Load("Songs/Test/22"),
-                                     (AudioClip)Resources.Load("Songs/Test/23"),
-                                     (AudioClip)Resources.Load("Songs/Test/24")};
+
     }
 
     // Update is called once per frame
@@ -44,10 +29,57 @@ public class AudioPlayer : MonoBehaviour
         
     }
 
-    public void PlayNext()
+    public void PlayMiss()
     {
-        source.clip = barClips[curClip];
-        source.Play();
-        curClip++;
+        int sound = Random.Range(0, missSounds.Length - 1);
+        missSource.clip = missSounds[sound];
+        missSource.Play();
     }
+
+    public void TapIn()
+    {
+        if(source.clip != tapIn)
+        {
+            source.clip = tapIn;
+        }
+        source.Play();
+    }
+
+    public void PlaySong()
+    {
+        if (!source.isPlaying)
+        {
+            source.clip = fullSong;
+            source.Play();
+        }
+        if (!source.mute)
+        {
+            return;
+        }
+        else
+        {
+            source.mute = false;
+        }
+    }
+
+    public void MoveSongForward()
+    {
+        timeInSong += (60f / BPM) / 4f;
+        Debug.Log("Moving forward time now = " + timeInSong);
+    }
+
+    public void StopSong()
+    {
+        PlayMiss();
+        if (!source.isPlaying)
+        {
+            source.clip = fullSong;
+            source.Play();
+        }
+        if (!source.mute)
+        {
+            source.mute = true;
+        }
+    }
+
 }

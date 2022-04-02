@@ -54,10 +54,13 @@ public class Arrow : MonoBehaviour
 
     public void StrumNote()
     {
-        if(!isMultiNote)
-        {
-            aPlayer.PlayNext();
-        }
+        aPlayer.PlaySong();
+        Destroy(this.gameObject);
+    }
+
+    public void MissNote()
+    {
+        aPlayer.StopSong();
         Destroy(this.gameObject);
     }
 }

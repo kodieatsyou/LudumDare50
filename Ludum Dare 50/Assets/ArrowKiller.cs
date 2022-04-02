@@ -20,7 +20,7 @@ public class ArrowKiller : MonoBehaviour
     {
         if(collision.gameObject.tag == "Note")
         {
-            collision.gameObject.GetComponent<Arrow>().StrumNote();
+            collision.gameObject.GetComponent<Arrow>().MissNote();
         }
     }
 }
