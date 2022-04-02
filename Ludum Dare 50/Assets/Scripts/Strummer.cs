@@ -53,7 +53,14 @@ public class Strummer : MonoBehaviour
             colliding = true;
             if (strumming)
             {
-                collision.gameObject.GetComponent<Arrow>().StrumNote();
+                if (collision.gameObject.GetComponent<Arrow>() != null)
+                {
+                    collision.gameObject.GetComponent<Arrow>().StrumNote();
+                }
+                else
+                {
+                    collision.gameObject.GetComponent<Arrow_Hold>().StrumNote();
+                }
             }
         }
     }

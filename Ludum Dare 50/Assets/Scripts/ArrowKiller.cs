@@ -20,7 +20,14 @@ public class ArrowKiller : MonoBehaviour
     {
         if(collision.gameObject.tag == "Note")
         {
-            collision.gameObject.GetComponent<Arrow>().MissNote();
+            if(collision.gameObject.GetComponent<Arrow>() != null)
+            {
+                collision.gameObject.GetComponent<Arrow>().MissNote();
+            } else
+            {
+                collision.gameObject.GetComponent<Arrow_Hold>().MissNote();
+            }
+            
         }
     }
 }
