@@ -6,6 +6,7 @@ TagManager:
   tags:
   - AudioPlayer
   - Note
+  - UIObject
   layers:
   - Default
   - TransparentFX
@@ -40,6 +41,18 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 954034187
+    locked: 0
+  - name: Arrows
+    uniqueID: 2635846441
+    locked: 0
+  - name: Stage
+    uniqueID: 96707663
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: UI
+    uniqueID: 3521274693
     locked: 0

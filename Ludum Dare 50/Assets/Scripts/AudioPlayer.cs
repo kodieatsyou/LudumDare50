@@ -14,9 +14,9 @@ public class AudioPlayer : MonoBehaviour
 
     public float BPM;
 
-    int curClip = 0;
-
     float timeInSong = 0;
+
+    bool playingSong = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +26,13 @@ public class AudioPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(playingSong)
+        {
+            GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>().SetBool("Playing", true);
+        } else
+        {
+            GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>().SetBool("Playing", false);
+        }
     }
 
     public void PlayMiss()
@@ -49,6 +55,7 @@ public class AudioPlayer : MonoBehaviour
     {
         if (!source.isPlaying)
         {
+            playingSong = true;
             source.clip = fullSong;
             source.Play();
         }
@@ -58,6 +65,8 @@ public class AudioPlayer : MonoBehaviour
         }
         else
         {
+            Debug.Log("Playing");
+            playingSong = true;
             source.mute = false;
         }
     }
@@ -78,6 +87,8 @@ public class AudioPlayer : MonoBehaviour
         }
         if (!source.mute)
         {
+            Debug.Log("Not Playing");
+            playingSong = false;
             source.mute = true;
         }
     }

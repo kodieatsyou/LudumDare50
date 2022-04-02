@@ -14,64 +14,63 @@ public class ArrowDropper : MonoBehaviour
     public GameObject upArrowSpawner;
     public GameObject downArrowSpawner;
     public GameObject arrow;
+    public GameObject holdArrow;
 
     public Text testText;
 
     public TextAsset song;
-    AudioSource source;
     string[] bars;
-    int bar = 0;
-    public AudioClip[] barClips;
 
-    int startCounter = 1;
+    int countBarsIn = 0;
+    bool start = false;
 
+    // 60f/BPM
 
-// Start is called before the first frame update
-void Start()
+    // Start is called before the first frame update
+    void Start()
     {
         bars = song.text.Split('.');
-        StartCoroutine(CountIn((60f / BPM) / 4f));
-        StartCoroutine(Play((60f/BPM)/4f));
+        start = false;
+        StartCoroutine(DropArrows(60f/BPM));
     }
 
     // Update is called once per frame
     void Update()
     {
-       
+
     }
 
-    IEnumerator CountIn(float seconds)
+    IEnumerator DropArrows(float seconds)
     {
-        while (startCounter < 14)
+        if(!start)
         {
-            if (startCounter % 4 == 0)
-            {
-                GameObject.FindGameObjectWithTag("AudioPlayer").GetComponent<AudioPlayer>().TapIn();
-            }
+            start = true;
             yield return new WaitForSecondsRealtime(seconds);
-            startCounter++;
-            Debug.Log(startCounter);
         }
-    }
-
-    IEnumerator Play(float seconds)
-    {
-        
+        while(countBarsIn < 4)
+        {
+            countBarsIn++;
+            GameObject.FindGameObjectWithTag("AudioPlayer").GetComponent<AudioPlayer>().TapIn();
+            yield return new WaitForSecondsRealtime(seconds);
+        } 
         for (int i = 0; i < bars.Length; i++)
         {
-            ReadBar(bars[i]);
+            if (i + 1 <= bars.Length - 1)
+            {
+                StartCoroutine(PlayNotesInBar(bars[i], seconds / bars[i].Length));
+            }
             yield return new WaitForSecondsRealtime(seconds);
         }
     }
 
-    void ReadBar(string bar)
+    IEnumerator PlayNotesInBar(string bar, float time)
     {
         for (int i = 0; i < bar.Length; i++)
         {
             if (bar[i] == 'L')
             {
                 GameObject newArrow = Instantiate(arrow, leftArrowSpawner.transform);
-                if(i != 0)
+                if (i != 0)
                 {
                     newArrow.GetComponent<Arrow>().isMultiNote = true;
                 }
@@ -104,6 +103,7 @@ void Start()
                 }
                 newArrow.GetComponent<Arrow>().setSprite("down");
             }
+            yield return new WaitForSecondsRealtime(time);
         }
     }
 }
