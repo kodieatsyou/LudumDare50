@@ -12,17 +12,13 @@ public class AudioPlayer : MonoBehaviour
 
     public AudioClip tapIn;
 
-    public AudioClip fullSong;
-
-    public float BPM;
-
-    float timeInSong = 0;
+    AudioClip song;
 
     bool playingSong = false;
-    // Start is called before the first frame update
-    void Start()
-    {
 
+    public void Load(AudioClip songClip) 
+    {
+        song = songClip;
     }
 
     // Update is called once per frame
@@ -50,9 +46,16 @@ public class AudioPlayer : MonoBehaviour
     {
         int sound = Random.Range(0, missSounds.Length - 1);
         missSource.clip = missSounds[sound];
-        source.mute = true;
+        StartCoroutine(MuteSongforHalfSecond());
         missSource.Play();
         GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().tickPerformanceDown();
+    }
+
+    IEnumerator MuteSongforHalfSecond()
+    {
+        source.mute = true;
+        yield return new WaitForSeconds(0.5f);
+        source.mute = false;
     }
 
     public void TapIn()
@@ -70,24 +73,18 @@ public class AudioPlayer : MonoBehaviour
         if (!source.isPlaying)
         {
             playingSong = true;
-            source.clip = fullSong;
+            source.clip = song;
             source.Play();
+            source.mute = false;
         }
-        if (!source.mute)
+        if (source.mute == false)
         {
             return;
         }
         else
         {
-            playingSong = true;
             source.mute = false;
         }
-    }
-
-    public void MoveSongForward()
-    {
-        timeInSong += (60f / BPM) / 4f;
-        Debug.Log("Moving forward time now = " + timeInSong);
     }
 
     public void StopSong()
@@ -96,13 +93,13 @@ public class AudioPlayer : MonoBehaviour
         GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().tickPerformanceDown();
         if (!source.isPlaying)
         {
-            source.clip = fullSong;
+            source.clip = song;
             source.Play();
         }
         if (!source.mute)
         {
             playingSong = false;
-            source.mute = true;
+            //source.mute = true;
         }
     }
 
@@ -118,8 +115,8 @@ public class AudioPlayer : MonoBehaviour
     {
         yield return new WaitForSeconds(source.clip.length);
         GameObject.FindGameObjectWithTag("Dropper").GetComponent<ArrowDropper>().StartDropping();
-        source.clip = fullSong;
-        source.Play();
+        source.clip = song;
+        source.time = 0;
     }
 
 }

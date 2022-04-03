@@ -17,10 +17,13 @@ public class Arrow : MonoBehaviour
 
     public bool isMultiNote = false;
 
+    public bool firstNote = false;
+
     // Start is called before the first frame update
     void Awake()
     {
         sr.sprite = left;
+        firstNote = false;
         aPlayer = GameObject.FindGameObjectWithTag("AudioPlayer").GetComponent<AudioPlayer>();
     }
 

@@ -38,6 +38,7 @@ public class UIController : MonoBehaviour
 
     public void MoveNeedle(int amnt)
     {
+        needlePlusMinus = amnt;
         GameObject.FindGameObjectWithTag("Needle").transform.localPosition = new Vector3(amnt, 0, 0);
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ArrowDropper : MonoBehaviour
 {
 
-    public float BPM;
+    float BPM;
 
     public GameObject leftArrowSpawner;
     public GameObject rightArrowSpawner;
@@ -16,56 +16,47 @@ public class ArrowDropper : MonoBehaviour
     public GameObject arrow;
     public GameObject holdArrow;
 
-    public Text testText;
-
-    public TextAsset song;
+    TextAsset song;
     string[] bars;
-
-    int countBarsIn = 0;
-    bool start = false;
 
     // 60f/BPM
 
-    // Start is called before the first frame update
-    void Start()
+    public void Load(TextAsset songText, float songBPM)
     {
+        song = songText;
+        BPM = songBPM;
         bars = song.text.Split('.');
-        start = false;
-        
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Srart()
     {
-
+        
     }
 
     public void StartDropping()
     {
         StartCoroutine(DropArrows(60f / BPM));
     }
-
     IEnumerator DropArrows(float seconds)
     {
-        /*while(countBarsIn < 4)
-        {
-            countBarsIn++;
-            GameObject.FindGameObjectWithTag("AudioPlayer").GetComponent<AudioPlayer>().TapIn();
-            yield return new WaitForSecondsRealtime(seconds);
-        } */
         for (int i = 0; i < bars.Length; i++)
         {
             if (i + 1 <= bars.Length - 1)
             {
-                StartCoroutine(PlayNotesInBar(bars[i], seconds / bars[i].Length));
+                if(i == 0)
+                {
+                    StartCoroutine(PlayNotesInBar(bars[i], seconds / bars[i].Length, true));
+                } else
+                {
+                    StartCoroutine(PlayNotesInBar(bars[i], seconds / bars[i].Length, false));
+                }
+                
             }
             yield return new WaitForSecondsRealtime(seconds);
         }
     }
-
-    IEnumerator PlayNotesInBar(string bar, float time)
+    IEnumerator PlayNotesInBar(string bar, float time, bool firstBar)
     {
-        Debug.Log("Playing: " + bar);
         for (int i = 0; i < bar.Length; i++)
         {
             if (bar[i] == 'L')
@@ -74,6 +65,10 @@ public class ArrowDropper : MonoBehaviour
                 if (i != 0)
                 {
                     newArrow.GetComponent<Arrow>().isMultiNote = true;
+                }
+                if (firstBar && i == 0)
+                {
+                    newArrow.GetComponent<Arrow>().firstNote = true;
                 }
                 newArrow.GetComponent<Arrow>().setSprite("left");
             }
@@ -84,6 +79,10 @@ public class ArrowDropper : MonoBehaviour
                 {
                     newArrow.GetComponent<Arrow>().isMultiNote = true;
                 }
+                if (firstBar && i == 0)
+                {
+                    newArrow.GetComponent<Arrow>().firstNote = true;
+                }
                 newArrow.GetComponent<Arrow>().setSprite("right");
             }
             else if (bar[i] == 'U')
@@ -92,6 +91,10 @@ public class ArrowDropper : MonoBehaviour
                 if (i != 0)
                 {
                     newArrow.GetComponent<Arrow>().isMultiNote = true;
+                }
+                if (firstBar && i == 0)
+                {
+                    newArrow.GetComponent<Arrow>().firstNote = true;
                 }
                 newArrow.GetComponent<Arrow>().setSprite("up");
             }
@@ -102,8 +105,13 @@ public class ArrowDropper : MonoBehaviour
                 {
                     newArrow.GetComponent<Arrow>().isMultiNote = true;
                 }
+                if (firstBar && i == 0)
+                {
+                    newArrow.GetComponent<Arrow>().firstNote = true;
+                }
                 newArrow.GetComponent<Arrow>().setSprite("down");
             }
+            
             yield return new WaitForSecondsRealtime(time);
         }
     }
