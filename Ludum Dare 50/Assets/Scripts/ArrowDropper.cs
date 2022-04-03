@@ -31,7 +31,7 @@ public class ArrowDropper : MonoBehaviour
     {
         bars = song.text.Split('.');
         start = false;
-        StartCoroutine(DropArrows(60f/BPM));
+        
     }
 
     // Update is called once per frame
@@ -40,19 +40,19 @@ public class ArrowDropper : MonoBehaviour
 
     }
 
+    public void StartDropping()
+    {
+        StartCoroutine(DropArrows(60f / BPM));
+    }
+
     IEnumerator DropArrows(float seconds)
     {
-        if(!start)
-        {
-            start = true;
-            yield return new WaitForSecondsRealtime(seconds);
-        }
-        while(countBarsIn < 4)
+        /*while(countBarsIn < 4)
         {
             countBarsIn++;
             GameObject.FindGameObjectWithTag("AudioPlayer").GetComponent<AudioPlayer>().TapIn();
             yield return new WaitForSecondsRealtime(seconds);
-        } 
+        } */
         for (int i = 0; i < bars.Length; i++)
         {
             if (i + 1 <= bars.Length - 1)
@@ -65,6 +65,7 @@ public class ArrowDropper : MonoBehaviour
 
     IEnumerator PlayNotesInBar(string bar, float time)
     {
+        Debug.Log("Playing: " + bar);
         for (int i = 0; i < bar.Length; i++)
         {
             if (bar[i] == 'L')

@@ -38,22 +38,6 @@ public class UIController : MonoBehaviour
 
     public void MoveNeedle(int amnt)
     {
-
-        if(amnt < 0)
-        {
-            if (needlePlusMinus + amnt >= -150)
-            {
-                performanceNeedle.GetComponentInChildren<RectTransform>().position = new Vector3(performanceNeedle.GetComponent<RectTransform>().position.x + amnt, performanceNeedle.GetComponent<RectTransform>().position.y, performanceNeedle.GetComponent<RectTransform>().position.z);
-            }
-        } else
-        {
-            if (needlePlusMinus + amnt <= 150)
-            {
-
-                performanceNeedle.GetComponentInChildren<RectTransform>().position = new Vector3(performanceNeedle.GetComponent<RectTransform>().position.x + amnt, performanceNeedle.GetComponent<RectTransform>().position.y, performanceNeedle.GetComponent<RectTransform>().position.z);
-            }
-        }
-        needlePlusMinus += amnt;
-        
+        GameObject.FindGameObjectWithTag("Needle").transform.localPosition = new Vector3(amnt, 0, 0);
     }
 }

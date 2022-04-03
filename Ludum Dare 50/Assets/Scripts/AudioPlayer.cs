@@ -8,6 +8,8 @@ public class AudioPlayer : MonoBehaviour
     public AudioSource source;
     public AudioSource missSource;
 
+    public AudioClip StartUp;
+
     public AudioClip tapIn;
 
     public AudioClip fullSong;
@@ -35,11 +37,22 @@ public class AudioPlayer : MonoBehaviour
         }
     }
 
+    public void PlaySongOnMute()
+    {
+        if(!source.isPlaying)
+        {
+            source.Play();
+            source.mute = true;
+        }
+    }
+
     public void PlayMiss()
     {
         int sound = Random.Range(0, missSounds.Length - 1);
         missSource.clip = missSounds[sound];
+        source.mute = true;
         missSource.Play();
+        GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().tickPerformanceDown();
     }
 
     public void TapIn()
@@ -53,6 +66,7 @@ public class AudioPlayer : MonoBehaviour
 
     public void PlaySong()
     {
+        GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().tickPerformanceUp();
         if (!source.isPlaying)
         {
             playingSong = true;
@@ -65,7 +79,6 @@ public class AudioPlayer : MonoBehaviour
         }
         else
         {
-            Debug.Log("Playing");
             playingSong = true;
             source.mute = false;
         }
@@ -80,6 +93,7 @@ public class AudioPlayer : MonoBehaviour
     public void StopSong()
     {
         PlayMiss();
+        GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>().tickPerformanceDown();
         if (!source.isPlaying)
         {
             source.clip = fullSong;
@@ -87,10 +101,25 @@ public class AudioPlayer : MonoBehaviour
         }
         if (!source.mute)
         {
-            Debug.Log("Not Playing");
             playingSong = false;
             source.mute = true;
         }
+    }
+
+    public void PlayStartUp()
+    {
+        source.clip = StartUp;
+        source.mute = false;
+        source.Play();
+        StartCoroutine(WaitForStartUp());
+    }
+
+    IEnumerator WaitForStartUp()
+    {
+        yield return new WaitForSeconds(source.clip.length);
+        GameObject.FindGameObjectWithTag("Dropper").GetComponent<ArrowDropper>().StartDropping();
+        source.clip = fullSong;
+        source.Play();
     }
 
 }

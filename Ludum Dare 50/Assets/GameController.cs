@@ -6,18 +6,26 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
 
-    public float performance = 0f;
+    public int performance = 0;
+    public int missAmnt = 2;
+    public int playAmnt = 1;
     GameObject uiObj;
+    GameObject MusicAudioPlayer;
+
+    public bool performingSong = false;
 
     private void Awake()
     {
         uiObj = GameObject.FindGameObjectWithTag("UIObject");
+        MusicAudioPlayer = GameObject.FindGameObjectWithTag("AudioPlayer");
+        performingSong = false;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        performance = 0f;
+        performance = 0;
+        MusicAudioPlayer.GetComponent<AudioPlayer>().PlayStartUp();
     }
 
     // Update is called once per frame
@@ -28,23 +36,26 @@ public class GameController : MonoBehaviour
 
     public void tickPerformanceDown()
     {
-        if(performance - 1 >= -100)
+        if(performance - missAmnt > -150)
         {
-            performance = performance - 1;
-            uiObj.GetComponent<UIController>().MoveNeedle(-10);
-        } else
+            performance = performance - missAmnt;
+        } else if (performance - missAmnt <= -150)
         {
-            //Loose
+            performance = -150;
         }
+        uiObj.GetComponent<UIController>().MoveNeedle(performance);
     }
 
     public void tickPerformanceUp()
     {
-        if(performance + 1 <= 100)
+        if(performance + playAmnt < 150)
         {
-            performance = performance + 1;
-            uiObj.GetComponent<UIController>().MoveNeedle(10);
+            performance = performance + playAmnt; 
+        } else if (performance + playAmnt >= 150)
+        {
+            performance = 150;
         }
+        uiObj.GetComponent<UIController>().MoveNeedle(performance);
     }
 
 }

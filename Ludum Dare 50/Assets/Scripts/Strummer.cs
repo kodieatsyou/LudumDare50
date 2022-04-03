@@ -10,10 +10,13 @@ public class Strummer : MonoBehaviour
 
     public Sprite lit;
     public Sprite dark;
+    public GameObject hitParticle;
 
     bool strumming = false;
 
     bool colliding = false;
+
+    GameObject collisionObj = null;
 
     // Start is called before the first frame update
     void Start()
@@ -30,10 +33,6 @@ public class Strummer : MonoBehaviour
 
     public void Strum()
     {
-        if(!colliding)
-        {
-            //GameObject.FindGameObjectWithTag("AudioPlayer").GetComponent<AudioPlayer>().PlayMiss();
-        }
         StartCoroutine(ActivateStrummer());
     }
 
@@ -41,6 +40,13 @@ public class Strummer : MonoBehaviour
     {
         sr.sprite = lit;
         strumming = true;
+        if(!colliding)
+        {
+            strumming = false;
+            GameObject.FindGameObjectWithTag("AudioPlayer").GetComponent<AudioPlayer>().PlayMiss();
+            yield return new WaitForSeconds(0.1f);
+            sr.sprite = dark;
+        }
         yield return new WaitForSeconds(0.1f);
         sr.sprite = dark;
         strumming = false;
@@ -55,11 +61,8 @@ public class Strummer : MonoBehaviour
             {
                 if (collision.gameObject.GetComponent<Arrow>() != null)
                 {
+                    Instantiate(hitParticle, gameObject.transform);
                     collision.gameObject.GetComponent<Arrow>().StrumNote();
-                }
-                else
-                {
-                    collision.gameObject.GetComponent<Arrow_Hold>().StrumNote();
                 }
             }
         }
@@ -69,7 +72,15 @@ public class Strummer : MonoBehaviour
     {
         if (collision.gameObject.tag == "Note")
         {
+            GameObject.FindGameObjectWithTag("AudioPlayer").GetComponent<AudioPlayer>().PlaySongOnMute();
             colliding = true;
+            if (strumming)
+            {
+                if (collision.gameObject.GetComponent<Arrow>() != null)
+                {
+                    collision.gameObject.GetComponent<Arrow>().StrumNote();
+                }
+            }
         }
     }
 
